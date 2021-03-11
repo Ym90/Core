@@ -16,14 +16,66 @@ const Discord = new Service ({
     display: "Discord",
     discription: "Chatbot for DiscordJS Service",
     settings: [
-        {
-            key: "Bot_Token", // Stored in datbase as Discord_Bot_Token
-            value: "",
-        }
+        { key: "Bot_Token" } // Discord_Bot_Token
     ]
 })
 
 run = (core) => {
+
+    let DiscordRemaps = [
+        'channelCreate',
+        'channelDelete',
+        'channelPinsUpdate',
+        'channelUpdate',
+        'debug',
+        'emojiCreate',
+        'emojiDelete',
+        'error',
+        'guildBanAdd',
+        'guildBanRemove',
+        'guildCreate',
+        'guildDelete',
+        'guildIntegrationUpdate',
+        'guildMemberAdd',
+        'guildMemberAvailable',
+        'guildMemberRemove',
+        'guildMembersChunk',
+        'guildMemberSpeaking',
+        'guildMemberUpdate',
+        'guildUnavailable',
+        'guildUpdate',
+        'invalidated',
+        'inviteCreate',
+        'inviteDelete',
+        'message',
+        'messageDelete',
+        'messageDeleteBulk',
+        'messageReactionAdd',
+        'messageReactionRemove',
+        'messageReactionRemoveAll',
+        'messageReactionRemoveEmoji',
+        'messageUpdate',
+        'presenceUpdate',
+        'ratelimit',
+        'ready',
+        'roleCreate',
+        'roleDelete',
+        'roleUpdate',
+        'shardDisconnect',
+        'shardError',
+        'shardReady',
+        'shardReconnecting',
+        'shardResume',
+        'typingStart',
+        'userUpdate',
+        'voiceStateUpdate',
+        'warn',
+        'webhookUpdate'
+    ].forEach(Event => {
+        client.on(Event, async args => {
+            core.emit(`Discord_${Event}`, args)
+        });
+    });
 
     client.on('message', msg => {
         if (msg.author.bot || msg.channel.type == 'dm') return;
@@ -40,9 +92,8 @@ run = (core) => {
         })
 
         core.emit('message', YM90Message);
-        core.emit('Discord_Message', msg);
     });
-    console.log(core.get('Discord_Bot_Token'));
+
     client.login(core.get('Discord_Bot_Token'))
     return Discord.info;
 }
