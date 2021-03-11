@@ -42,7 +42,6 @@ class Core extends EventEmitter {
                 this.set(row.Key, row.Value);
             });
 
-
             // Load Services
             this.getEnabledServices().forEach(Service => {
                 this.LoadService(Service.ui, Service);
@@ -51,10 +50,13 @@ class Core extends EventEmitter {
             this.getEnabledModules().forEach(Module => {
                 this.LoadModule(Module.ui, Module);
             });
-
+            this.SaveConfig() // Just a save before we ready up
             this.emit('ready');
         });
 
+        this.db.on("error", function(error) {
+            console.log("Getting an error : ", error);
+        }); 
 
         setInterval(() => {
             this.SaveConfig()
@@ -208,11 +210,19 @@ class Core extends EventEmitter {
     }
 
     SaveConfig = function () {
-        let sqlqueries = '';
-        this.Settings.forEach((s) => {
-            sqlqueries = sqlqueries + `REPLACE INTO "settings" ("Key", "Value") VALUES ('${s.key}', '${s.value}');\n`;
+        let Query = "INSERT OR REPLACE INTO settings (Key, Value) VALUES (?, ?)"; 
+        let Values = [];
+        this.Settings.forEach(set => {
+            Values.push([set.key, set.value]);
         })
-        this.db.get(sqlqueries, [], (err) => { if (err) cl(err) });
+        console.log(Values);
+        let statement = this.db.prepare(Query);
+        for (var i = 0; i < Values.length; i++) {
+            statement.run(Values[i], function (err) { 
+                if (err) throw err;
+            });
+        }
+        statement.finalize();
         this.cl(`Settings | configuration has been saved.`)
     }
 
