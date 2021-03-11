@@ -24,7 +24,7 @@ let SteveTest = new Module ({
 
 let commands = [
 
-    new Command({name: "test",alias: ["cunt"], exec: async function (msg) {
+    new Command({name: "test",alias: ["test2-electric-boogaloo"], exec: async function (msg) {
         msg.reply("test works");
     }}),
 ]
