@@ -21,7 +21,7 @@ const Discord = new Service ({
 })
 
 run = (core) => {
-
+    core.Discord = client;
     let DiscordRemaps = [
         'channelCreate',
         'channelDelete',
@@ -73,7 +73,7 @@ run = (core) => {
         'webhookUpdate'
     ].forEach(Event => {
         client.on(Event, async args => {
-            core.emit(`Discord_${Event}`, args)
+            core.emit(`Discord_${Event}`, client, args)
         });
     });
 

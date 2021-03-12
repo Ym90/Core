@@ -33,10 +33,12 @@ core.on('ready', msg => {
     cl(`INFO | Modules: ${core.ActiveModules.size}`)
     cl(`INMO | Commands: ${core.CommandList.size}`)
     cl(`INFO | ============================================ `)
+    //console.log(core.Settings);
 });
 
 
 core.on('message', msg => {
+    // console.log(msg);
     let prefix = core.Settings.get('Core_Prefix').info.value;
 
     let content = `${msg.content}`.toLocaleLowerCase();
@@ -49,7 +51,6 @@ core.on('message', msg => {
         // Get the Command and its related Module Data
         let CommandData = core.CommandData.get(core.CommandList.get(args[0]))
         let ModuleData = core.ActiveModules.get(CommandData.info.partof);
-        console.log(ModuleData)
         console.log(msg)
         // Check if the Module Supports the Platform the Message comes from.
         if (ModuleData.info.services.includes(msg.platform)) {

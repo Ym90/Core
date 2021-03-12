@@ -53,24 +53,25 @@ run = (core) => {
         );
   
         const chatClient = new ChatClient(auth, { channels: channel });
+        core.Twitch = chatClient;
         await chatClient.connect();
        
         // Twitch Remaps
-        chatClient.onAction(args => core.emit(`Twitch_Action`, args));
-        chatClient.onAuthenticationFailure(args => core.emit(`Twitch_AuthenticationFailure`, args));
-        chatClient.onBan(args => core.emit(`Twitch_Ban`, args));
-        chatClient.onBitsBadgeUpgrade(args => core.emit(`Twitch_BitsBadgeUpgrade`, args));
-        chatClient.onChatClear(args => core.emit(`Twitch_ChatClear`, args));
-        chatClient.onCommunityPayForward(args => core.emit(`Twitch_CommunityPayForward`, args));
-        chatClient.onCommunitySub(args => core.emit(`Twitch_CommunitySub`, args));
-        chatClient.onEmoteOnly(args => core.emit(`Twitch_EmoteOnly`, args));
-        chatClient.onFollowersOnly(args => core.emit(`Twitch_FollowersOnly`, args));
-        chatClient.onGiftPaidUpgrade(args => core.emit(`Twitch_GiftPaidUpgrade`, args));
-        chatClient.onHost(args => core.emit(`Twitch_Host`, args));
-        chatClient.onHosted(args => core.emit(`Twitch_Hosted`, args));
-        chatClient.onHostsRemaining(args => core.emit(`Twitch_HostsRemaining`, args));
-        chatClient.onJoin(args => core.emit(`Twitch_Join`, args));
-        chatClient.onMessage(args => {
+        chatClient.onAction(args => core.emit(`Twitch_Action`, chatClient, args));
+        chatClient.onAuthenticationFailure(args => core.emit(`Twitch_AuthenticationFailure`, chatClient, args));
+        chatClient.onBan(args => core.emit(`Twitch_Ban`, chatClient, args));
+        chatClient.onBitsBadgeUpgrade(args => core.emit(`Twitch_BitsBadgeUpgrade`, chatClient, args));
+        chatClient.onChatClear(args => core.emit(`Twitch_ChatClear`, chatClient, args));
+        chatClient.onCommunityPayForward(args => core.emit(`Twitch_CommunityPayForward`, chatClient, args));
+        chatClient.onCommunitySub(args => core.emit(`Twitch_CommunitySub`, chatClient, args));
+        chatClient.onEmoteOnly(args => core.emit(`Twitch_EmoteOnly`, chatClient, args));
+        chatClient.onFollowersOnly(args => core.emit(`Twitch_FollowersOnly`, chatClient, args));
+        chatClient.onGiftPaidUpgrade(args => core.emit(`Twitch_GiftPaidUpgrade`, chatClient, args));
+        chatClient.onHost(args => core.emit(`Twitch_Host`, chatClient, args));
+        chatClient.onHosted(args => core.emit(`Twitch_Hosted`, chatClient, args));
+        chatClient.onHostsRemaining(args => core.emit(`Twitch_HostsRemaining`, chatClient, args));
+        chatClient.onJoin(args => core.emit(`Twitch_Join`, chatClient, args));
+        chatClient.onMessage((channel, user, message, msg) => {
             let YM90Message = new Message({
                 platform: Twitch.info.display,
                 platformData: msg,
@@ -82,31 +83,30 @@ run = (core) => {
                 replyfunction: function (reply) { chatClient.say(channel, `\^${reply}`) }
             })
             core.emit('message', YM90Message);
-
-            core.emit(`Twitch_Message`, args)
+            core.emit(`Twitch_Message`, chatClient, (channel, user, message, msg))
         });
-        chatClient.onMessageFailed(args => core.emit(`Twitch_MessageFailed`, args));
-        chatClient.onMessageRatelimit(args => core.emit(`Twitch_MessageRatelimit`, args));
-        chatClient.onMessageRemove(args => core.emit(`Twitch_MessageRemove`, args));
-        chatClient.onNoPermission(args => core.emit(`Twitch_NoPermission`, args));
-        chatClient.onPart(args => core.emit(`Twitch_Part`, args));
-        chatClient.onPrimeCommunityGift(args => core.emit(`Twitch_PrimeCommunityGift`, args));
-        chatClient.onPrimePaidUpgrade(args => core.emit(`Twitch_PrimePaidUpgrade`, args));
-        chatClient.onR9k(args => core.emit(`Twitch_R9k`, args));
-        chatClient.onRaid(args => core.emit(`Twitch_Raid`, args));
-        chatClient.onRaidCancel(args => core.emit(`Twitch_RaidCancel`, args));
-        chatClient.onResub(args => core.emit(`Twitch_Resub`, args));
-        chatClient.onRewardGift(args => core.emit(`Twitch_RewardGift`, args));
-        chatClient.onRitual(args => core.emit(`Twitch_Ritual`, args));
-        chatClient.onSlow(args => core.emit(`Twitch_Slow`, args));
-        chatClient.onStandardPayForward(args => core.emit(`Twitch_StandardPayForward`, args));
-        chatClient.onSub(args => core.emit(`Twitch_Sub`, args));
-        chatClient.onSubExtend(args => core.emit(`Twitch_SubExtend`, args));
-        chatClient.onSubGift(args => core.emit(`Twitch_SubGift`, args));
-        chatClient.onSubsOnly(args => core.emit(`Twitch_SubsOnly`, args));
-        chatClient.onTimeout(args => core.emit(`Twitch_Timeout`, args));
-        chatClient.onUnhost(args => core.emit(`Twitch_Unhost`, args));
-        chatClient.onWhisper(args => core.emit(`Twitch_Whisper`, args));
+        chatClient.onMessageFailed(args => core.emit(`Twitch_MessageFailed`, chatClient, args));
+        chatClient.onMessageRatelimit(args => core.emit(`Twitch_MessageRatelimit`, chatClient, args));
+        chatClient.onMessageRemove(args => core.emit(`Twitch_MessageRemove`, chatClient, args));
+        chatClient.onNoPermission(args => core.emit(`Twitch_NoPermission`, chatClient, args));
+        chatClient.onPart(args => core.emit(`Twitch_Part`, chatClient, args));
+        chatClient.onPrimeCommunityGift(args => core.emit(`Twitch_PrimeCommunityGift`, chatClient, args));
+        chatClient.onPrimePaidUpgrade(args => core.emit(`Twitch_PrimePaidUpgrade`, chatClient, args));
+        chatClient.onR9k(args => core.emit(`Twitch_R9k`, chatClient, args));
+        chatClient.onRaid(args => core.emit(`Twitch_Raid`, chatClient, args));
+        chatClient.onRaidCancel(args => core.emit(`Twitch_RaidCancel`, chatClient, args));
+        chatClient.onResub(args => core.emit(`Twitch_Resub`, chatClient, args));
+        chatClient.onRewardGift(args => core.emit(`Twitch_RewardGift`, chatClient, args));
+        chatClient.onRitual(args => core.emit(`Twitch_Ritual`, chatClient, args));
+        chatClient.onSlow(args => core.emit(`Twitch_Slow`, chatClient, args));
+        chatClient.onStandardPayForward(args => core.emit(`Twitch_StandardPayForward`, chatClient, args));
+        chatClient.onSub(args => core.emit(`Twitch_Sub`, chatClient, args));
+        chatClient.onSubExtend(args => core.emit(`Twitch_SubExtend`, chatClient, args));
+        chatClient.onSubGift(args => core.emit(`Twitch_SubGift`, chatClient, args));
+        chatClient.onSubsOnly(args => core.emit(`Twitch_SubsOnly`, chatClient, args));
+        chatClient.onTimeout(args => core.emit(`Twitch_Timeout`, chatClient, args));
+        chatClient.onUnhost(args => core.emit(`Twitch_Unhost`, chatClient, args));
+        chatClient.onWhisper(args => core.emit(`Twitch_Whisper`, chatClient, args));
 
     }
     main();
@@ -114,4 +114,4 @@ run = (core) => {
     return Twitch.info;
 }
 
-module.exports = { info: Twitch.info, run }
+module.exports = { info: Twitch.info, run};
